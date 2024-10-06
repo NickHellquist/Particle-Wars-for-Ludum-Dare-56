@@ -1,0 +1,93 @@
+[gd_scene load_steps=3 format=3 uid="uid://bbe6ynuklq4dx"]
+
+[ext_resource type="Script" path="res://Scenes/Utility/item_options.gd" id="1_qa0hw"]
+[ext_resource type="Texture2D" uid="uid://b4yyggv4iudo7" path="res://Graphics/frame.png" id="2_hc5x6"]
+
+[node name="item_options" type="ColorRect"]
+process_mode = 2
+custom_minimum_size = Vector2(180, 50)
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0.529412, 0.807843, 0.921569, 0.439216)
+script = ExtResource("1_qa0hw")
+
+[node name="lbl_name" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 12
+text = "Name"
+
+[node name="lbl_description" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.043
+anchor_top = 0.593
+anchor_right = 0.043
+anchor_bottom = 0.598
+offset_left = 0.26
+offset_top = -10.65
+offset_right = 165.26
+offset_bottom = 16.1
+grow_vertical = 2
+theme_override_font_sizes/font_size = 6
+text = "Description"
+autowrap_mode = 2
+
+[node name="lbl_rarity" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.978
+anchor_right = 0.978
+offset_left = -51.04
+offset_right = -0.0399933
+offset_bottom = 16.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 8
+text = "Rare"
+horizontal_alignment = 2
+
+[node name="lbl_lvl" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.011
+anchor_right = 0.011
+offset_right = 20.0
+offset_bottom = 16.0
+theme_override_font_sizes/font_size = 8
+text = "Level 1"
+horizontal_alignment = 2
+
+[node name="highlight" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0, 0, 0.0980392)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(90, 25)
+texture = ExtResource("2_hc5x6")
+
+[node name="Button" type="TextureButton" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[connection signal="focus_entered" from="Button" to="." method="_on_button_focus_entered"]
+[connection signal="focus_exited" from="Button" to="." method="_on_button_focus_exited"]
+[connection signal="mouse_entered" from="Button" to="." method="_on_button_mouse_entered"]
+[connection signal="mouse_exited" from="Button" to="." method="_on_button_mouse_exited"]

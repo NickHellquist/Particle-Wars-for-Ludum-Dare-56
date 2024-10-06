@@ -1,0 +1,70 @@
+[gd_scene load_steps=8 format=3 uid="uid://cxsl115hm5bk4"]
+
+[ext_resource type="Script" path="res://Scenes/Utility/xp_gem.gd" id="1_6se7o"]
+[ext_resource type="Texture2D" uid="uid://dq7gkgpuw3v7e" path="res://Graphics/LD56Player.png" id="2_x8sns"]
+[ext_resource type="AudioStream" uid="uid://c4yfw8hxgu3mm" path="res://Sound/XPCollect.wav" id="3_n5ec8"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bdvid"]
+
+[sub_resource type="Animation" id="Animation_kxnf5"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.4, 0.4)]
+}
+
+[sub_resource type="Animation" id="Animation_d0e3p"]
+resource_name = "anim"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.4, 0.4), Vector2(0.5, 0.5), Vector2(0.4, 0.4)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_di67x"]
+_data = {
+"RESET": SubResource("Animation_kxnf5"),
+"anim": SubResource("Animation_d0e3p")
+}
+
+[node name="xpGem" type="Area2D" groups=["loot"]]
+top_level = true
+z_index = -2
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("1_6se7o")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_bdvid")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.666667, 1, 0, 1)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2_x8sns")
+hframes = 3
+vframes = 2
+
+[node name="snd_collected" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_n5ec8")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_di67x")
+}
+autoplay = "anim"

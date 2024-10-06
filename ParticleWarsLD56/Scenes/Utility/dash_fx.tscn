@@ -1,0 +1,47 @@
+[gd_scene load_steps=6 format=3 uid="uid://dl8co2udbdcom"]
+
+[ext_resource type="Script" path="res://Scenes/Utility/dash_fx.gd" id="1_r3d32"]
+[ext_resource type="AudioStream" uid="uid://hpfcx7sb37gf" path="res://Sound/DashSFX.wav" id="2_vdvsx"]
+
+[sub_resource type="Gradient" id="Gradient_f5p3b"]
+offsets = PackedFloat32Array(0.00318471, 0.343949, 0.773885, 1)
+colors = PackedColorArray(1, 1, 1, 0, 0.998753, 0.821989, 0.794437, 1, 0.49538, 0.566602, 0.82428, 0.733333, 0.533333, 0.0313726, 0.0313726, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_b7qsy"]
+gradient = SubResource("Gradient_f5p3b")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_lg5x4"]
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 25.0
+gravity = Vector3(0, 0, 0)
+linear_accel_min = 2.4
+linear_accel_max = 10.78
+radial_accel_min = 4.79
+radial_accel_max = 13.17
+tangential_accel_min = 8.38
+tangential_accel_max = 31.13
+scale_max = 5.0
+color_ramp = SubResource("GradientTexture1D_b7qsy")
+
+[node name="dash_fx" type="Node2D"]
+top_level = true
+script = ExtResource("1_r3d32")
+
+[node name="gpu" type="GPUParticles2D" parent="."]
+unique_name_in_owner = true
+z_index = 1
+emitting = false
+amount = 50
+process_material = SubResource("ParticleProcessMaterial_lg5x4")
+lifetime = 0.5
+one_shot = true
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("2_vdvsx")
+autoplay = true
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.0
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

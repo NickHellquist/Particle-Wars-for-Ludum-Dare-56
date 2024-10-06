@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://ij0dtkdfajfg"]
+
+[ext_resource type="Script" path="res://Scenes/Player/knockback.gd" id="1_hyhvp"]
+[ext_resource type="Texture2D" uid="uid://c22yg54fqbda3" path="res://Graphics/LD56Circle.png" id="1_iccip"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pqws1"]
+radius = 64.0312
+
+[node name="knockback" type="StaticBody2D"]
+collision_layer = 4
+collision_mask = 4
+script = ExtResource("1_hyhvp")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_iccip")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_pqws1")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 1.2
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

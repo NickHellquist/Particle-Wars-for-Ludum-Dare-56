@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3 uid="uid://cj5brbqh7o480"]
+
+[ext_resource type="Script" path="res://Scenes/Enemy/enemyhit.gd" id="1_s1jsh"]
+
+[sub_resource type="Gradient" id="Gradient_h28fc"]
+offsets = PackedFloat32Array(0, 0.343949, 0.77707, 1)
+colors = PackedColorArray(0.690196, 0.054902, 0.054902, 0, 0.533333, 0.0313726, 0.0313726, 1, 0.533333, 0.0313726, 0.0313726, 1, 0.533333, 0.0313726, 0.0313726, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_yxntj"]
+gradient = SubResource("Gradient_h28fc")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_f8kqa"]
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 10.0
+gravity = Vector3(0, 0, 0)
+linear_accel_min = 2.4
+linear_accel_max = 10.78
+radial_accel_min = 4.79
+radial_accel_max = 13.17
+tangential_accel_min = 8.38
+tangential_accel_max = 31.13
+scale_max = 5.0
+color_ramp = SubResource("GradientTexture1D_yxntj")
+
+[node name="enemyhit" type="Node2D"]
+script = ExtResource("1_s1jsh")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+z_index = 1
+emitting = false
+amount = 25
+process_material = SubResource("ParticleProcessMaterial_f8kqa")
+lifetime = 0.8
+one_shot = true
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

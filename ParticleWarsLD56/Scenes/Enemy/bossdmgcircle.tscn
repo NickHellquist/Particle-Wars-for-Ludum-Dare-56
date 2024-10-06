@@ -1,0 +1,43 @@
+[gd_scene load_steps=6 format=3 uid="uid://cmxp25jd5q6ow"]
+
+[ext_resource type="Texture2D" uid="uid://c22yg54fqbda3" path="res://Graphics/LD56Circle.png" id="1_fayop"]
+[ext_resource type="Script" path="res://Scenes/Enemy/bossdmgcircle.gd" id="1_trqbr"]
+[ext_resource type="Script" path="res://Scenes/Utility/hit_box.gd" id="2_6130w"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_uq0ly"]
+radius = 63.1981
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0ygl0"]
+radius = 63.1506
+
+[node name="bossdmgcircle" type="Area2D"]
+script = ExtResource("1_trqbr")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 0, 0, 1)
+texture = ExtResource("1_fayop")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_uq0ly")
+disabled = true
+
+[node name="HitBox" type="Area2D" parent="." groups=["attack"]]
+collision_layer = 2
+collision_mask = 2
+monitoring = false
+script = ExtResource("2_6130w")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
+shape = SubResource("CircleShape2D_0ygl0")
+
+[node name="DisableHitBoxTimer" type="Timer" parent="HitBox"]
+wait_time = 0.5
+one_shot = true
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.5
+one_shot = true
+autostart = true
+
+[connection signal="timeout" from="HitBox/DisableHitBoxTimer" to="HitBox" method="_on_disable_hit_box_timer_timeout"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://5g4y48yl71jt"]
+
+[ext_resource type="Script" path="res://Scenes/Utility/enemy_spawner.gd" id="1_jr0g0"]
+[ext_resource type="Script" path="res://Scenes/Utility/spawn_info.gd" id="2_i5jj4"]
+
+[sub_resource type="Resource" id="Resource_vmj4p"]
+script = ExtResource("2_i5jj4")
+Time_start = 0
+Time_end = 0
+enemy_num = 0
+enemy_spawn_delay = 0
+
+[node name="EnemySpawner" type="Node2D"]
+script = ExtResource("1_jr0g0")
+spawns = Array[ExtResource("2_i5jj4")]([SubResource("Resource_vmj4p")])
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

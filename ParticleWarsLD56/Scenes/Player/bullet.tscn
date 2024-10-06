@@ -1,0 +1,76 @@
+[gd_scene load_steps=9 format=3 uid="uid://bq5rk8jx8n1si"]
+
+[ext_resource type="Script" path="res://Scenes/Player/bullet.gd" id="1_hthkm"]
+[ext_resource type="Texture2D" uid="uid://dq7gkgpuw3v7e" path="res://Graphics/LD56Player.png" id="2_3epoc"]
+[ext_resource type="Texture2D" uid="uid://bav4iafhn7del" path="res://Graphics/Light/circle.png" id="3_40rf6"]
+[ext_resource type="AudioStream" uid="uid://574bu2njvhoa" path="res://Sound/shoot.wav" id="4_rgt8f"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_c0olj"]
+radius = 8.0
+
+[sub_resource type="Gradient" id="Gradient_qvbrs"]
+offsets = PackedFloat32Array(0.00318471, 0.343949, 0.773885, 1)
+colors = PackedColorArray(1, 1, 1, 0, 0.998753, 0.821989, 0.794437, 1, 0.49538, 0.566602, 0.82428, 0.733333, 0.533333, 0.0313726, 0.0313726, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_oq78k"]
+gradient = SubResource("Gradient_qvbrs")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_iu21l"]
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 15.0
+gravity = Vector3(0, 0, 0)
+linear_accel_min = 2.4
+linear_accel_max = 10.78
+radial_accel_min = 4.79
+radial_accel_max = 13.17
+tangential_accel_min = 8.38
+tangential_accel_max = 31.13
+scale_max = 5.0
+color_ramp = SubResource("GradientTexture1D_oq78k")
+
+[node name="bullet" type="Area2D" groups=["attack"]]
+top_level = true
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("1_hthkm")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_c0olj")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = -1
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_3epoc")
+hframes = 3
+vframes = 2
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 3.0
+autostart = true
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+z_index = 1
+energy = 0.5
+texture = ExtResource("3_40rf6")
+texture_scale = 0.15
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+z_index = 1
+emitting = false
+amount = 25
+process_material = SubResource("ParticleProcessMaterial_iu21l")
+lifetime = 0.5
+one_shot = true
+
+[node name="Timer2" type="Timer" parent="."]
+one_shot = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_rgt8f")
+volume_db = -10.0
+autoplay = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="Timer2" to="." method="_on_timer_2_timeout"]
