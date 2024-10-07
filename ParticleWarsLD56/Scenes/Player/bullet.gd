@@ -32,11 +32,15 @@ func _ready() -> void:
 	rotation = angle.angle() + deg_to_rad(135)
 	hp = 2 + player.whp
 	speed = 110 * player.projectile_speed
-	knockback_amount = 60 * player.knockback_increase
-	
-	var tween:Tween = create_tween()
-	tween.tween_property(self, "scale", Vector2(1,1) * attack_size,0.5).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT).from(Vector2(0,0))
-	tween.play()
+	knockback_amount = 65 * player.knockback_increase
+	if Globals.very_hard == true:
+		var tween:Tween = create_tween()
+		tween.tween_property(self, "scale", Vector2(0.7,0.7) * attack_size,0.5).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT).from(Vector2(0,0))
+		tween.play()
+	else:
+		var tween:Tween = create_tween()
+		tween.tween_property(self, "scale", Vector2(1,1) * attack_size,0.5).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT).from(Vector2(0,0))
+		tween.play()
 func _physics_process(delta):
 	position += angle * speed * delta
 	rotation += rotation_speed * delta

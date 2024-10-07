@@ -28,6 +28,7 @@ var whp: int = 0
 
 var size_decrease: float = 0.9
 var size_increase: float = 1.1
+var size_increase2: float = 1.2
 var current_scale: Vector2 = Vector2(0.5,0.5)
 var projectile_speed: float = 1
 
@@ -58,6 +59,7 @@ var upgrade_options = []
 @onready var enemy_near_timer: Timer = $EnemyNearTimer
 @onready var enemy_near_timeratk: Timer = $EnemyNearTimer/EnemyNearTimeratk
 
+var XP_magnet: bool = false
 var explosion_chance: int = 20
 var explosion_active: bool = false
 var sgammo: int = 0
@@ -101,6 +103,8 @@ var sg: PackedScene = preload("res://Scenes/Player/knockback.tscn")
 @onready var blackheart_10: TextureRect = %blackheart10
 @onready var kbspawner: Node2D = $kbspawner
 @onready var snd_win: AudioStreamPlayer = $snd_win
+@onready var snd_lose: AudioStreamPlayer = %snd_lose
+
 @onready var h_box_container: HBoxContainer = $CanvasLayer/Control/HBoxContainer
 @onready var h_box_container_2: HBoxContainer = $CanvasLayer/Control/HBoxContainer2
 @onready var hardcheck: CheckBox = %hard
@@ -152,6 +156,14 @@ var nr: int = 3
 @onready var music: CheckBox = %music
 
 @onready var signal_timer: Timer = %signalTimer
+@onready var frenzy_timer: Timer = %FrenzyTimer
+var frenzy: bool = false
+var frenzy_duration: int = 4
+var frenzy_activate: bool = false
+var frenzy_cooldown: int = 30
+var dashCDtime: float = 10
+
+var hp_item: bool = false
 
 func _ready() -> void:
 	if Globals.fullscreen == true:
@@ -164,9 +176,10 @@ func _ready() -> void:
 		music.button_pressed = false
 	if Globals.hard == true:
 		hardcheck.button_pressed = true
+		dashCDtime = 8
 	elif Globals.very_hard == true:
 		veryhard.button_pressed = true
-	
+		dashCDtime = 6
 	dashlbl.text = str("Dash: ",dash_count)
 	h_box_container.visible = false
 	h_box_container_2.visible = false
@@ -183,8 +196,8 @@ func _ready() -> void:
 	lbl_offensive.text = str("Offensive Modifiers: ",collected_offensive_modifier,"/",nr)
 	lbl_defensive.text = str("Defensive Modifiers: ",collected_defensive_modifiers,"/",nr)
 	enemy_near_collision.call_deferred("set","disabled", true)
-	enemyclosecircle.scale = Vector2(1.0,1.0)
-	enemy_close_area.scale = Vector2(1.0,1.0)
+	enemyclosecircle.scale = Vector2(2.0,2.0)
+	enemy_close_area.scale = Vector2(2.0,2.0)
 	enemyclosecircle.visible = false
 	previous_movement_speed = movement_speed
 	if Globals.hard == true:
@@ -213,6 +226,7 @@ func _ready() -> void:
 	
 func _physics_process(_delta: float) -> void:
 	movement()
+	
 func movement():
 	var x_mov = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
 	var y_mov = Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up")
@@ -261,8 +275,10 @@ func dash():
 		previous_movement_speed = movement_speed
 		movement_speed += dash_speed
 		if dashTimer.is_stopped():
+			dashTimer.wait_time = dashCDtime * (1-dash_cooldown)
 			dashTimer.start()
 		elif dashTimer2.is_stopped():
+			dashTimer.wait_time = dashCDtime * (1-dash_cooldown)
 			dashTimer2.start()
 		dash_count -= 1
 		dashlbl.text = str("Dash: ",dash_count)
@@ -329,11 +345,14 @@ func _on_hurt_box_hurt(damage, _angle, _knockback):
 func death():
 	deathanim.play("new_animation")
 	lbl_timer.visible = true
-	lbl_timer.text = str("Time: ", time)
+	lbl_timer.text = str("Time: ", lblTimer.text)
 	buttons.visible = true
 	black.visible = true
 	lbl_death.visible = true
 	lbl_death.text = str("Defeated")
+	if Globals.music == true:
+		snd_music.stop()
+		snd_lose.play()
 	get_tree().paused = true
 
 	
@@ -450,10 +469,13 @@ func upgrade_character(upgrade):
 		"bulletsize3":
 			attack_size += 0.10
 		"DashCooldown1":
+			dash_cooldown = clamp(dash_cooldown,0,0.85)
 			dash_cooldown += 0.025
 		"DashCooldown2":
+			dash_cooldown = clamp(dash_cooldown,0,0.85)
 			dash_cooldown += 0.050
 		"DashCooldown3":
+			dash_cooldown = clamp(dash_cooldown,0,0.85)
 			dash_cooldown += 0.10
 		"maxhp1":
 			collected_defensive_modifiers += 1
@@ -470,7 +492,7 @@ func upgrade_character(upgrade):
 				current_scale = scale
 				if scale != max_size:
 					var tween:Tween = create_tween()
-					tween.tween_property(self, "scale", current_scale * size_increase,0.5).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT).from(current_scale)
+					tween.tween_property(self, "scale", current_scale * size_increase2,0.5).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT).from(current_scale)
 					tween.play()
 			else:
 				if hp < maxhp:
@@ -481,7 +503,7 @@ func upgrade_character(upgrade):
 					current_scale = scale
 					if scale != max_size:
 						var tween:Tween = create_tween()
-						tween.tween_property(self, "scale", current_scale * size_increase,0.5).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT).from(current_scale)
+						tween.tween_property(self, "scale", current_scale * size_increase2,0.5).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT).from(current_scale)
 						tween.play()
 		"maxhp2":
 			collected_modifiers.append(upgrade)
@@ -496,7 +518,7 @@ func upgrade_character(upgrade):
 				current_scale = scale
 				if scale != max_size:
 					var tween:Tween = create_tween()
-					tween.tween_property(self, "scale", current_scale * size_increase,0.5).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT).from(current_scale)
+					tween.tween_property(self, "scale", current_scale * size_increase2,0.5).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT).from(current_scale)
 					tween.play()
 			else:
 				if hp < maxhp:
@@ -507,7 +529,7 @@ func upgrade_character(upgrade):
 					current_scale = scale
 					if scale != max_size:
 						var tween:Tween = create_tween()
-						tween.tween_property(self, "scale", current_scale * size_increase,0.5).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT).from(current_scale)
+						tween.tween_property(self, "scale", current_scale * size_increase2,0.5).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT).from(current_scale)
 						tween.play()
 		"piercing1":
 			whp += 1
@@ -560,7 +582,7 @@ func upgrade_character(upgrade):
 			collected_modifiers.append(upgrade)
 			additional_ammo += 1
 		"enemynear1":
-			near_baseammo += 1
+			near_baseammo = 1
 			enemy_near_collision.call_deferred("set","disabled", false)
 			collected_offensive_modifier += 1
 			lbl_offensive.text = str("Offensive Modifiers: ",collected_offensive_modifier,"/",nr)
@@ -568,10 +590,10 @@ func upgrade_character(upgrade):
 			enemyclosecircle.visible = true
 		"enemynear2":
 			collected_modifiers.append(upgrade)
-			near_additional_ammo += 1
+			near_additional_ammo = 1
 		"enemynear3":
 			collected_modifiers.append(upgrade)
-			near_additional_ammo += 1
+			near_additional_ammo = 2
 		"explosiveshot1":
 			collected_offensive_modifier += 1
 			lbl_offensive.text = str("Offensive Modifiers: ",collected_offensive_modifier,"/",nr)
@@ -596,6 +618,17 @@ func upgrade_character(upgrade):
 		"safeguard3":
 			collected_modifiers.append(upgrade)
 			sg_wait_time = 30
+		"frenzy1":
+			collected_modifiers.append(upgrade)
+			collected_offensive_modifier += 1
+			lbl_offensive.text = str("Offensive Modifiers: ",collected_offensive_modifier,"/",nr)
+			frenzy_activate = true
+		"frenzy2":
+			frenzy_duration += 2
+			collected_modifiers.append(upgrade)
+		"frenzy3":
+			frenzy_duration += 3
+			collected_modifiers.append(upgrade)
 	var option_children = upgradeOptions.get_children()
 	for i in option_children:
 		i.queue_free()
@@ -603,9 +636,21 @@ func upgrade_character(upgrade):
 	attack()
 	level_panel.visible = false
 	get_tree().paused = false
+	
 	snd_music.volume_db = -5
+	if hp_item == true:
+		hp_item = false
+		set_size_sprite()
+		
 	calculate_experience(0)
 	
+func set_size_sprite():
+	current_scale = scale
+	if scale != max_size:
+		var tween:Tween = create_tween()
+		tween.tween_property(self, "scale", current_scale * size_increase2,0.5).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT).from(current_scale)
+		tween.play()
+
 func change_time(argtime = 0):
 	time = argtime
 	var get_m = int (time/60.0)
@@ -617,16 +662,30 @@ func change_time(argtime = 0):
 	lblTimer.text = str(get_m, ":", get_s)
 	
 func attack() -> void:
-	atk_timer.wait_time *= (1-atkspeed) 
+	if frenzy_activate == true:
+		frenzy_timer.wait_time = frenzy_cooldown
+		frenzy_timer.start()
+		frenzy_activate = false
+	if frenzy == false:
+		atk_timer.wait_time = 3 * (1-atkspeed)
 	if atk_timer.wait_time <= atk_timer_2.wait_time:
 		atk_timer.wait_time += 0.10
 	if atk_timer.is_stopped():
 		atk_timer.start()
 	if enemy_near_timer.is_stopped():
 		enemy_near_timer.start()
+	if frenzy_activate == true and frenzy_timer.is_stopped():
+		frenzy_timer.start()
+	
+	if near_baseammo > 0:
+		enemy_near_collision.call_deferred("set","disabled", false)
+		enemyclosecircle.visible = true
 
 func _on_atk_timer_timeout() -> void:
 	ammo += baseammo + additional_ammo
+	if frenzy == false:
+		atk_timer.wait_time = 3 * (1-atkspeed) 
+		
 	atk_timer_2.start()
 
 func _on_timer_timeout() -> void:
@@ -889,3 +948,19 @@ func _on_hard_toggled(toggled_on: bool) -> void:
 		Globals.hard = true
 	else:
 		Globals.hard = false
+
+
+func _on_frenzy_timer_timeout():
+	if frenzy == false:
+		frenzy = true
+		frenzy_timer.wait_time = frenzy_duration
+		frenzy_timer.start()
+		atk_timer.stop()
+		atk_timer.wait_time = 0.5
+		atk_timer.start()
+		print("attack_timer", atk_timer.wait_time)
+		return
+	elif frenzy == true:
+		frenzy = false
+		frenzy_timer.wait_time = frenzy_cooldown
+		frenzy_timer.start()

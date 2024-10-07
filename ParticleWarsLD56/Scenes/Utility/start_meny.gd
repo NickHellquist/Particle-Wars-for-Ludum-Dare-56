@@ -9,6 +9,7 @@ extends ColorRect
 @onready var veryhard: CheckBox = $HBoxContainer/veryhard
 @onready var quitbtn: Button = $quitbtn
 @onready var fullscreen: CheckBox = $fullscreen
+@onready var label_2: Label = $Label2
 
 
 @onready var anim1: AnimationPlayer = $AnimationPlayer
@@ -21,6 +22,7 @@ extends ColorRect
 
 
 func _ready() -> void:
+	label_2.visible = false
 	if Globals.fullscreen == true:
 		fullscreen.button_pressed = true
 	else:

@@ -403,4 +403,34 @@ const UPGRADES = {
 		"level": "Level 3",
 		"type": "offensive_modifier"
 	},
+	"frenzy1":{
+		"icon": ICON_PATH + "MainWeapon1ICONRED.png",
+		"displayname": "Frenzy",
+		"details": "Every 30s enter a frenzied state with much higher attack speed.",
+		"Raretext": "Offensive Modifier",
+		"prerequisite": [],
+		"rarity": "R",
+		"level": "Level 1",
+		"type": "offensive_modifier"
+	},
+	"frenzy2":{
+		"icon": ICON_PATH + "MainWeapon1ICONRED.png",
+		"displayname": "Frenzy",
+		"details": "Frenzied state duration increased by 2s.",
+		"Raretext": "Offensive Modifier",
+		"prerequisite": ["frenzy1"],
+		"rarity": "R",
+		"level": "Level 2",
+		"type": "offensive_modifier"
+	},
+	"frenzy3":{
+		"icon": ICON_PATH + "MainWeapon1ICONRED.png",
+		"displayname": "Frenzy",
+		"details": "Frenzied state duration increased by 3s.",
+		"Raretext": "Offensive Modifier",
+		"prerequisite": ["frenzy2"],
+		"rarity": "R",
+		"level": "Level 3",
+		"type": "offensive_modifier"
+	}
 }

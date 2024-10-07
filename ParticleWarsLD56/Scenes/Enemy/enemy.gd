@@ -60,16 +60,14 @@ func _ready():
 	Globals.boss_dead.connect(death)
 	if Globals.hard == true:
 		experience += 1
-		xpmagnet_chance+=1
-		movement_speed += 5
+		movement_speed += randi_range(5,7)
 		hpitem_chance = 5
-		hp += 2
+		hp += 3
 	elif Globals.very_hard == true:
 		experience += 2
-		xpmagnet_chance+=4
-		movement_speed += 5
+		movement_speed += randi_range(5,10)
 		hpitem_chance = 2
-		hp += 2
+		hp += 4
 	else:
 		pass
 	collision.call_deferred("set","disabled", true)

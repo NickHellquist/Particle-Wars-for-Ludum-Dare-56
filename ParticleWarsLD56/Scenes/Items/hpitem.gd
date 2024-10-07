@@ -14,7 +14,7 @@ var speed: float = -0.5
 func _ready() -> void:
 	if player.hp < player.maxhp:
 		sprite.texture = hptext
-	elif player.maxhp >= player.maxhp_cap:
+	elif player.maxhp_cap > player.maxhp:
 		sprite.texture = maxhptext
 	else:
 		queue_free()

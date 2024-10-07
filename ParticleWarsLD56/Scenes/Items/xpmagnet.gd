@@ -7,12 +7,14 @@ var grabsize: float = 1000
 @onready var timer: Timer = $Timer
 @onready var collision: CollisionShape2D = $CollisionShape2D
 
-
-
 var target = null
 var speed: float = -0.5
 
-
+func _ready() -> void:
+	if player.XP_magnet == true:
+		queue_free()
+	else:
+		player.XP_magnet = true
 
 func _physics_process(delta):
 	if target != null:
@@ -31,4 +33,5 @@ func _on_body_entered(body: CharacterBody2D) -> void:
 
 func _on_timer_timeout() -> void:
 	player.grabarea.shape.radius = player.previous_grabarea
+	player.XP_magnet = false
 	queue_free()

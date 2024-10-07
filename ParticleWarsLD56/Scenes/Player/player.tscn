@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://bys4krgkooea7"]
+[gd_scene load_steps=40 format=3 uid="uid://bys4krgkooea7"]
 
 [ext_resource type="Script" path="res://Scenes/Player/player.gd" id="1_xyjij"]
 [ext_resource type="Texture2D" uid="uid://dq7gkgpuw3v7e" path="res://Graphics/LD56Player.png" id="2_ivif7"]
@@ -15,6 +15,7 @@
 [ext_resource type="AudioStream" uid="uid://div7bj0da1xge" path="res://Sound/click.wav" id="13_452nd"]
 [ext_resource type="AudioStream" uid="uid://x0yyl714xxjd" path="res://Sound/ParticleWarsLoop.ogg" id="14_obe11"]
 [ext_resource type="AudioStream" uid="uid://hbcjwtdy3t36" path="res://Sound/LD56win.wav" id="15_3v234"]
+[ext_resource type="AudioStream" uid="uid://d15cxd4he185t" path="res://Sound/LD56lose.wav" id="16_3cw3y"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_e3hc7"]
 radius = 16.0
@@ -79,7 +80,7 @@ _data = {
 }
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ixtup"]
-radius = 64.0703
+radius = 127.016
 
 [sub_resource type="Animation" id="Animation_62cd4"]
 length = 0.001
@@ -1481,13 +1482,15 @@ collision_mask = 4
 shape = SubResource("CircleShape2D_ixtup")
 
 [node name="enemyclosecircle" type="Sprite2D" parent="."]
-modulate = Color(1, 0, 0, 0.227451)
+modulate = Color(1, 0, 0, 0.215686)
+scale = Vector2(2, 2)
 texture = ExtResource("10_is302")
 
 [node name="EnemyNearTimer" type="Timer" parent="."]
+wait_time = 2.0
 
 [node name="EnemyNearTimeratk" type="Timer" parent="EnemyNearTimer"]
-wait_time = 0.1
+wait_time = 0.5
 
 [node name="sgTimer" type="Timer" parent="."]
 unique_name_in_owner = true
@@ -1542,6 +1545,17 @@ process_mode = 3
 stream = ExtResource("15_3v234")
 volume_db = -8.0
 
+[node name="FrenzyTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 30.0
+one_shot = true
+
+[node name="snd_lose" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+process_mode = 3
+stream = ExtResource("16_3cw3y")
+volume_db = -8.0
+
 [connection signal="area_entered" from="HurtBox" to="HurtBox" method="_on_area_entered"]
 [connection signal="hurt" from="HurtBox" to="." method="_on_hurt_box_hurt"]
 [connection signal="timeout" from="HurtBox/DisableTimer" to="HurtBox" method="_on_disable_timer_timeout"]
@@ -1570,3 +1584,4 @@ volume_db = -8.0
 [connection signal="timeout" from="sgTimer" to="." method="_on_sg_timer_timeout"]
 [connection signal="timeout" from="InfoTimer" to="." method="_on_info_timer_timeout"]
 [connection signal="timeout" from="signalTimer" to="." method="_on_signal_timer_timeout"]
+[connection signal="timeout" from="FrenzyTimer" to="." method="_on_frenzy_timer_timeout"]
